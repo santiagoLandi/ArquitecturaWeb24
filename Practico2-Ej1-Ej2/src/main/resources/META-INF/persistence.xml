@@ -1,0 +1,28 @@
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+    <persistence-unit name="jpaTP2">
+
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <!-- Mapeo de clases -->
+        <class>model.Persona</class>
+        <class>model.Direccion</class>
+        <class>model.Socio</class>
+        <class>model.Turno</class>
+
+        <properties>
+            <!-- Cambia las siguientes propiedades según tu configuración -->
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/tp2ejsocio"/>
+            <property name="jakarta.persistence.jdbc.user" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="password"/>
+
+            <!-- Otras propiedades (si es necesario) -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+            <property name="show_sql" value="true"/>
+            <!-- ... otras propiedades ... -->
+        </properties>
+    </persistence-unit>
+</persistence>
