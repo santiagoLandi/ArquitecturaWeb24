@@ -23,6 +23,21 @@ public class MysqlPersonaDAO implements PersonaDAO {
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public int getIdFromPersonas(Persona persona) {
+        try (EntityManager em = connect.getFactory().createEntityManager()) {
+            em.getTransaction().begin();
+            if(!em.contains(persona)) {
+                persona=em.merge(persona);
+
+            }
+            em.getTransaction().commit();
+            return persona.getIdPersona();
+
+        }catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public Persona findById(int id) {
@@ -62,4 +77,6 @@ public class MysqlPersonaDAO implements PersonaDAO {
             em.getTransaction().commit();
         }
     }
+
+
 }

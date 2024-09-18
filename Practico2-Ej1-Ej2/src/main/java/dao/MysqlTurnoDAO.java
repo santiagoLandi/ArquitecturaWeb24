@@ -1,11 +1,14 @@
 package dao;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import model.Persona;
 import model.Turno;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MysqlTurnoDAO implements TurnoDAO {
@@ -50,6 +53,28 @@ public class MysqlTurnoDAO implements TurnoDAO {
             throw e;
         }
     }
+    @Override
+    public ArrayList<Persona> getJugadoresPorTurno(Turno turno) {
+        try (EntityManager em = connect.getFactory().createEntityManager()) {
+            em.getTransaction().begin();
+
+            // Asegurarse de que el turno esté en el contexto de persistencia
+            if (!em.contains(turno)) {
+                turno = em.merge(turno);
+            }
+
+            // Forzar la inicialización de la colección jugadores
+            Hibernate.initialize(turno.getJugadores());
+
+            ArrayList<Persona> jugadores = (ArrayList<Persona>) turno.getJugadores();
+
+            em.getTransaction().commit();
+            return jugadores;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public Turno obtenerTurnoConJugadores(Long turnoId) {
         try (EntityManager em = connect.getFactory().createEntityManager()) {
@@ -78,9 +103,8 @@ public class MysqlTurnoDAO implements TurnoDAO {
     @Override
     public Turno findById(int id) {
         try (EntityManager em = connect.getFactory().createEntityManager()) {
-            return em.createQuery("SELECT t FROM Turno t WHERE t.idTurno = :id", Turno.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
+
+            return em.find(Turno.class, id);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
@@ -89,12 +113,46 @@ public class MysqlTurnoDAO implements TurnoDAO {
     @Override
     public List<Turno> findAll() {
         try (EntityManager em = connect.getFactory().createEntityManager()) {
+            em.getTransaction().begin();
             return em.createQuery("from Turno", Turno.class).getResultList();
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
+    public int getIdFromTurno(Turno turno){
+        try (EntityManager em = connect.getFactory().createEntityManager()) {
+            em.getTransaction().begin();
+            TypedQuery<Turno> query = em.createQuery(
+                    "SELECT t FROM Turno t WHERE t.fecha = :fecha", Turno.class);
+            query.setParameter("fecha", turno.getFecha());
+            List<Turno> turnos = query.getResultList();
+            if (turnos.isEmpty()) {
+                // Si no se encuentra el turno, puedes manejarlo como prefieras, lanzar una excepción o devolver un valor.
+                throw new RuntimeException("No se encontró un turno con esa fecha");
+            }
+
+            return turnos.get(0).getIdTurno();
+        }catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    /*
+    public int getIdFromTurno(Turno turno) {
+        try (EntityManager em = connect.getFactory().createEntityManager()) {
+            em.getTransaction().begin();
+            if (!em.contains(turno)) {
+                turno = em.merge(turno);
+            }
+            em.getTransaction().commit();
+            return turno.getIdTurno();
+
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    */
     @Override
     public List<Persona> findAllById(int id) {
         try (EntityManager em = connect.getFactory().createEntityManager()) {

@@ -11,6 +11,8 @@ public interface PersonaDAO {
 
     Persona findById(int id);
 
+    int getIdFromPersonas(Persona persona);
+
     List<Persona> findAll();
 
     void update(int id, String nombre, int edad, Direccion direccion);

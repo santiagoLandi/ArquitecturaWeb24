@@ -26,6 +26,8 @@ public class MysqlDireccionDAO implements DireccionDAO{
     public Direccion findById(int id) {
         try(EntityManager em = connect.getFactory().createEntityManager()){
             return em.find(Direccion.class, id);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
     }
 

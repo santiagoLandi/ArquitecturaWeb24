@@ -13,6 +13,7 @@ public interface TurnoDAO {
 
     List<Turno> findAll();
 
+    int getIdFromTurno(Turno turno);
 
     void agregarJugador(Turno t, Persona p);
 
@@ -21,5 +22,7 @@ public interface TurnoDAO {
     void update(int id, LocalDateTime fecha);
 
     void delete(Turno t);
+
+    List<Persona>getJugadoresPorTurno(Turno t);
 
 }

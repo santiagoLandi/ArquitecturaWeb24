@@ -48,6 +48,8 @@ public class Turno {
 
     }
 
+
+
     public List<Persona> getJugadores() {
         return new ArrayList<>(jugadores);
     }
