@@ -40,18 +40,16 @@ public class Turno {
         return fecha;
     }
 
+    public List<Persona> getJugadores() {
+        return new ArrayList<Persona>(jugadores);
+    }
+
     public void addJugadoresATurno(Persona persona) {
         if(!jugadores.contains(persona)) {
             this.jugadores.add(persona);
             persona.addTurno(this);
         }
 
-    }
-
-
-
-    public List<Persona> getJugadores() {
-        return new ArrayList<>(jugadores);
     }
 
     @Override
@@ -63,13 +61,6 @@ public class Turno {
         return "fecha= " + fecha + ", jugadores= " + jugadores.toString();
     }
 
-    public void setJugadores(ArrayList<Persona> jugadores) {
-        this.jugadores = jugadores;
-    }
-
-    public int getJugadoresSize(){
-        return jugadores.size();
-    }
 
     public boolean isJugadoresInitialized() {
         // Verifica si la colección jugadores está inicializada

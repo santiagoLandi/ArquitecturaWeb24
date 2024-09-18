@@ -32,21 +32,17 @@ public class MysqlTurnoDAO implements TurnoDAO {
     public void agregarJugador(Turno turno, Persona persona) {
         try (EntityManager em = connect.getFactory().createEntityManager()) {
             em.getTransaction().begin();
-
             // Reatachar las entidades "detached"
             Turno managedTurno = em.merge(turno);
             Persona managedPersona = em.merge(persona);
-
             // Verificar si la persona ya está en la lista de jugadores
             if (!managedTurno.getJugadores().contains(managedPersona)) {
                 // Agregar la persona al turno y viceversa
                 managedTurno.addJugadoresATurno(managedPersona);
             }
-
             // Guardar las entidades
             em.merge(managedTurno);
             em.merge(managedPersona);
-
             em.getTransaction().commit();
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -54,20 +50,16 @@ public class MysqlTurnoDAO implements TurnoDAO {
         }
     }
     @Override
-    public ArrayList<Persona> getJugadoresPorTurno(Turno turno) {
+    public List<Persona> getJugadoresPorTurno(Turno turno) {
         try (EntityManager em = connect.getFactory().createEntityManager()) {
             em.getTransaction().begin();
-
             // Asegurarse de que el turno esté en el contexto de persistencia
             if (!em.contains(turno)) {
                 turno = em.merge(turno);
             }
-
             // Forzar la inicialización de la colección jugadores
             Hibernate.initialize(turno.getJugadores());
-
             ArrayList<Persona> jugadores = (ArrayList<Persona>) turno.getJugadores();
-
             em.getTransaction().commit();
             return jugadores;
         } catch (RuntimeException e) {
@@ -79,11 +71,9 @@ public class MysqlTurnoDAO implements TurnoDAO {
     public Turno obtenerTurnoConJugadores(Long turnoId) {
         try (EntityManager em = connect.getFactory().createEntityManager()) {
             em.getTransaction().begin();
-
             Turno turno = em.find(Turno.class, turnoId);
             // Inicializar la lista de jugadores si es necesario
             turno.getJugadores().size(); // Esto fuerza la carga de la lista si es Lazy
-            
             return turno;
         } catch (RuntimeException e) {
             throw new RuntimeException();
@@ -103,7 +93,6 @@ public class MysqlTurnoDAO implements TurnoDAO {
     @Override
     public Turno findById(int id) {
         try (EntityManager em = connect.getFactory().createEntityManager()) {
-
             return em.find(Turno.class, id);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
