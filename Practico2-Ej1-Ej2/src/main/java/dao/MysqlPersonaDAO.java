@@ -78,5 +78,15 @@ public class MysqlPersonaDAO implements PersonaDAO {
         }
     }
 
+    @Override
+    public List<Persona> getPersonasByCity(String ciudad) {
+        try(EntityManager em = connect.getFactory().createEntityManager()) {
+            em.getTransaction().begin();
+            return em.createQuery("SELECT p FROM Persona p JOIN p.direccion WHERE p.direccion.ciudad LIKE :ciudad",Persona.class).setParameter("ciudad",ciudad).getResultList();
+        }catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

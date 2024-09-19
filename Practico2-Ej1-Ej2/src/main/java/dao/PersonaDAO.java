@@ -18,4 +18,6 @@ public interface PersonaDAO {
     void update(int id, String nombre, int edad, Direccion direccion);
 
     void delete(Persona p);
+
+    List<Persona>getPersonasByCity(String ciudad);
 }
