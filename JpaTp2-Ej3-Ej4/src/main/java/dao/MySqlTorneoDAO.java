@@ -1,6 +1,7 @@
 package dao;
 
 import jakarta.persistence.EntityManager;
+import model.Equipo;
 import model.Torneo;
 
 import java.util.List;
@@ -62,6 +63,23 @@ public class MySqlTorneoDAO implements TorneoDAO {
         try(EntityManager em=conn.getFactory().createEntityManager()){
             return em.createQuery("from Torneo", Torneo.class).getResultList();
         } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void insertEquipoEnTorneo(Equipo equipo, Torneo torneo) {
+        try(EntityManager em=conn.getFactory().createEntityManager()){
+            em.getTransaction().begin();
+            Equipo equipo1=em.merge(equipo);
+            Torneo torneo1=em.merge(torneo);
+            if(torneo1.getEquiposParticipantes().contains(equipo1)){
+                torneo1.addEquipo(equipo1);
+            }
+            em.merge(torneo1);
+            em.merge(equipo1);
+
+        }catch(RuntimeException e){
             throw new RuntimeException(e);
         }
     }

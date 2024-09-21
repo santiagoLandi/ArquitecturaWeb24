@@ -2,8 +2,11 @@ package dao;
 
 import jakarta.persistence.EntityManager;
 import model.Equipo;
+import model.Jugador;
 import model.Torneo;
+import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlEquipoDAO implements EquipoDAO {
@@ -69,4 +72,44 @@ public class MySqlEquipoDAO implements EquipoDAO {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void insertJugadorEnEquipo(Jugador jugador, Equipo equipo) {
+        try(EntityManager em= conn.getFactory().createEntityManager()){
+            em.getTransaction().begin();
+            Equipo team= em.merge(equipo);
+            Jugador player= em.merge(jugador);
+
+            if(!team.getJugadores().contains(player)){
+                team.addJugador(player);
+            }
+            em.merge(team);
+            em.merge(jugador);
+            em.getTransaction().commit();
+        }catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Jugador> getJugadores(Equipo equipo) {
+        try(EntityManager em= conn.getFactory().createEntityManager()){
+            em.getTransaction().begin();
+            Equipo team= em.merge(equipo);
+            int i=team.getJugadores().size();
+            return team.getJugadores();
+            /*
+            if(!em.contains(equipo)){
+                em.merge(equipo);
+            }
+            Hibernate.initialize(equipo.getJugadores());
+            ArrayList<Jugador>jugadores= (ArrayList<Jugador>)equipo.getJugadores();
+            em.getTransaction().commit();
+            return jugadores;
+             */
+        }catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

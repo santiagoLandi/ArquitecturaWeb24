@@ -1,5 +1,6 @@
 package dao;
 
+import model.Equipo;
 import model.Torneo;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface TorneoDAO {
     void deleteTorneo(Torneo torneo);
     Torneo getTorneo(int id);
     List<Torneo> getTorneos();
+    void insertEquipoEnTorneo(Equipo equipo, Torneo torneo);
 }

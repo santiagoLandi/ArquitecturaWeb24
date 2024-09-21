@@ -14,7 +14,7 @@
         <properties>
             <!-- Cambia las siguientes propiedades según tu configuración -->
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/tp2ejsocio"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/tp2_ej3_4"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
             <property name="jakarta.persistence.jdbc.password" value="password"/>
 
