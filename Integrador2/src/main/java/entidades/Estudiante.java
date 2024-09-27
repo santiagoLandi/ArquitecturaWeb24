@@ -145,7 +145,8 @@ public class Estudiante {
                 ", dni='" + dni + '\'' +
                 ", ciudadResidencia='" + ciudadResidencia + '\'' +
                 ", lu=" + libretaUniv +
-                ", inscripciones=" + inscripciones +
+                /*
+                ", inscripciones=" + inscripciones +*/
                 '}';
     }
 }

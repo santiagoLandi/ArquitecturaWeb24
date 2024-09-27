@@ -1,5 +1,6 @@
 package daos;
 
+import entidades.Carrera;
 import entidades.Estudiante;
 import entidades.Inscripcion;
 
@@ -169,7 +170,19 @@ public class EstudianteDao implements Dao<Estudiante> {
         }
     }
 
-    // f) Recuperar las carreras con estudiantes inscriptos, y ordenar por cantidad de inscriptos (Consulta implementada en JpaInscripcionDAO)
+    // g) Recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
+    public List<Estudiante> recuperarEstudiantesPorCarreraYCiudad(Carrera carrera, String ciudadResidencia) {
+        try {
+            return em.createQuery(
+                            "SELECT e FROM Estudiante e JOIN e.inscripciones i WHERE i.carrera = :carrera AND e.ciudadResidencia = :ciudad", Estudiante.class)
+                    .setParameter("carrera", carrera)
+                    .setParameter("ciudad", ciudadResidencia)
+                    .getResultList();
+        } catch (PersistenceException e) {
+            System.out.println("Error al obtener estudiantes por carrera y residencia! " + e.getMessage());
+            throw e;
+        }
+    }
 
-    // g) Recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia (Consulta implementada en JpaInscripcionDAO)
+
 }

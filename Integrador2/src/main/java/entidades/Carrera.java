@@ -62,7 +62,6 @@ public class Carrera {
         return "Carrera{" +
                 "id=" + idCarrera +
                 ", nombre='" + nombre + '\'' +
-                ", inscripciones=" + inscripciones +
                 '}';
     }
 }

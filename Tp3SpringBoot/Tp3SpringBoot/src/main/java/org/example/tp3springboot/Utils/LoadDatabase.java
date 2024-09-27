@@ -16,6 +16,7 @@ class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(@Qualifier("personaRepository") PersonaRepository repository, DireccionRepository direccionRepository, PersonaRepository personaRepository) {
         return args -> {
+            /*
             // Crear instancias de Direccion
             Direccion d = new Direccion("Pinto",615);
             Direccion d1 = new Direccion("Avellaneda",1415);

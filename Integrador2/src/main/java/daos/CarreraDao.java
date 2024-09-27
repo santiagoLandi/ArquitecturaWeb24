@@ -1,6 +1,7 @@
 package daos;
 
-import dtos.Reporte;
+import dtos.CarreraConCantInscriptosDTO;
+import dtos.ReporteCarreraDTO;
 import entidades.Carrera;
 import entidades.Inscripcion;
 
@@ -131,23 +132,24 @@ public class CarreraDao implements Dao<Carrera> {
         }
     }
 
-    public List<Reporte> generarReporteCarreras() {
+    public List<ReporteCarreraDTO> generarReporteCarreras() {
         try {
-            String jpql = "SELECT new dtos.Reporte(c.nombre, " +
+            String jpql = "SELECT new dtos.ReporteCarreraDTO(c.nombre, " +
                     "i.anioInscripcion, " +
                     "i.anioEgreso, " +
-                    "COUNT(CASE WHEN i.anioEgreso IS NULL THEN 1 END), " + // Inscripciones sin egreso
-                    "COUNT(CASE WHEN i.anioEgreso IS NOT NULL THEN 1 END)) " + // Inscripciones con egreso
+                    "(SELECT COUNT(i1) FROM Inscripcion i1 WHERE i1.anioEgreso IS NULL AND i1.carrera = c), " + // Inscripciones sin egreso
+                    "(SELECT COUNT(i2) FROM Inscripcion i2 WHERE i2.anioEgreso IS NOT NULL AND i2.carrera = c)) " + // Inscripciones con egreso
                     "FROM Inscripcion i " +
                     "JOIN i.carrera c " +
-                    "GROUP BY c.nombre, i.anioInscripcion, i.anioEgreso " +
-                    "ORDER BY c.nombre ASC, i.anioInscripcion ASC, i.anioEgreso ASC";
+                    "JOIN i.estudiante e " +
+                    "ORDER BY c.nombre ASC, YEAR(i.anioInscripcion) ASC, YEAR(i.anioEgreso) ASC";
 
-            TypedQuery<Reporte> query = em.createQuery(jpql, Reporte.class);
+            TypedQuery<ReporteCarreraDTO> query = em.createQuery(jpql, ReporteCarreraDTO.class);
             return query.getResultList();
         } catch (Exception e) {
             System.out.println("Error al generar reporte de carreras: " + e.getMessage());
             return null;
         }
     }
+
 }

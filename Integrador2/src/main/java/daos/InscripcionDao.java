@@ -1,5 +1,6 @@
 package daos;
 
+import dtos.CarreraConCantInscriptosDTO;
 import entidades.Carrera;
 import entidades.Estudiante;
 import entidades.Inscripcion;
@@ -7,6 +8,7 @@ import entidades.Inscripcion;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class InscripcionDao implements Dao<Inscripcion> {
@@ -129,32 +131,37 @@ public class InscripcionDao implements Dao<Inscripcion> {
     }
 
     // f) Recuperar las carreras con estudiantes inscriptos, y ordenar por cantidad de inscriptos
-    public List<Object[]> recuperarCarrerasOrdenadasPorCantidadInscriptos() {
+    public List<CarreraConCantInscriptosDTO>listarCarrerasPorCantidadInscriptos() {
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
         try {
-            return em.createQuery(
-                            "SELECT i.carrera.nombre, COUNT(i) AS inscriptos " +
-                                    "FROM Inscripcion i " +
-                                    "GROUP BY i.carrera.nombre " +
-                                    "HAVING COUNT(i) > 0 " + // Solo incluir carreras con al menos un inscripto
-                                    "ORDER BY COUNT(i) DESC", Object[].class)
-                    .getResultList();
-        } catch (PersistenceException e) {
-            System.out.println("Error al obtener carreras con inscriptos! " + e.getMessage());
-            throw e;
+            String jpql ="SELECT  new dtos.CarreraConCantInscriptosDTO (c.nombre, COUNT(*)) " +
+                    "FROM Carrera c JOIN c.inscripciones i " +
+                    "GROUP BY c.nombre " +
+                    "ORDER BY 2 DESC ";
+            TypedQuery<CarreraConCantInscriptosDTO> query = em.createQuery(jpql, CarreraConCantInscriptosDTO.class);
+            return query.getResultList();
+        } catch (Exception e) {
+            System.out.println("Error al generar reporte de carreras: " + e.getMessage());
+        }
+        return List.of();
+    }
+
+
+    public void fijarAnioDeGraduacion(Inscripcion,Integer anioGraduacion) {
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        try{
+            String jpql = "SELECT i FROM Inscripcion i WHERE i. = :estudiante AND i.carrera = :carrera";
+            TypedQuery<Inscripcion> query = em.createQuery(jpql, Inscripcion.class);
+            Inscripcion inscripcion = query.getSingleResult();
+            if (inscripcion != null) {
+                inscripcion.setAnioEgreso(anioGraduacion);
+                em.merge(inscripcion);
+            }
+        }catch (Exception e) {
+            System.out.println("Error al setear anio graduacion en alumno: " + e.getMessage());
         }
     }
 
-    // g) Recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
-    public List<Estudiante> recuperarEstudiantesPorCarreraYCiudad(Carrera carrera, String ciudadResidencia) {
-        try {
-            return em.createQuery(
-                            "SELECT e FROM Inscripcion i JOIN i.estudiante e WHERE i.carrera = :carrera AND e.ciudadResidencia = :ciudad", Estudiante.class)
-                    .setParameter("carrera", carrera)
-                    .setParameter("ciudad", ciudadResidencia)
-                    .getResultList();
-        } catch (PersistenceException e) {
-            System.out.println("Error al obtener estudiantes por carrera y residencia! " + e.getMessage());
-            throw e;
-        }
-    }
 }

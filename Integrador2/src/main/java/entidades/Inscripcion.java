@@ -98,7 +98,7 @@ public class Inscripcion {
     public String toString() {
         return "Inscripcion{" +
                 "id=" + idInscripcion +
-                ", antiguedad=" + this.getAntiguedad() +
+                ", antiguedad=" + anioEgreso +
                 ", anioInscripcion=" + anioInscripcion +
                 ", anioEgreso=" + anioEgreso +
                 ", graduado=" + graduado +

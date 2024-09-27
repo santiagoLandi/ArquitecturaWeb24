@@ -1,14 +1,14 @@
 import daos.CarreraDao;
 import daos.EstudianteDao;
 import daos.InscripcionDao;
-import dtos.Reporte;
+import dtos.CarreraConCantInscriptosDTO;
+import dtos.ReporteCarreraDTO;
 import entidades.Carrera;
 import entidades.Estudiante;
 import entidades.Inscripcion;
 import factories.Factory;
 import factories.MySqlFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -47,12 +47,12 @@ public class Main {
 
 
         assert dao != null;
-        EstudianteDao estudianteDao= (EstudianteDao) dao.getEstudianteDAO();
+        EstudianteDao estudianteDao=  dao.getEstudianteDAO();
         assert dao1 != null;
-        InscripcionDao inscripcionDao= (InscripcionDao) dao1.getInscripcionDAO();
+        InscripcionDao inscripcionDao=dao1.getInscripcionDAO();
         assert dao2 != null;
-        CarreraDao carreraDao= (CarreraDao) dao2.getCarreraDAO();
-
+        CarreraDao carreraDao=dao2.getCarreraDAO();
+        /*
         estudianteDao.insert(e);
         estudianteDao.insert(e1);
         estudianteDao.insert(e2);
@@ -80,7 +80,10 @@ public class Main {
         inscripcionDao.insert(i9);
         inscripcionDao.insert(i10);
         inscripcionDao.insert(i11);
-
+        */
+        inscripcionDao.fijarAnioDeGraduacion(i12024);
+        inscripcionDao.fijarAnioDeGraduacion(e2,c2,2024);
+        /*
         List<Reporte> reporte=carreraDao.generarReporteCarreras();
         if(reporte!=null){
             for(Reporte r:reporte){
@@ -90,6 +93,51 @@ public class Main {
             System.out.println("No hay carreras");
         }
 
+        System.out.println("Listado de estudiantes ordenados por nombre");
+        List<Estudiante>estudiantesOrdenados=estudianteDao.obtenerEstudiantesOrdenadosPorNombre();
+        for(Estudiante estudiante:estudiantesOrdenados){
+            System.out.println(estudiante.toString());
+        }
+
+        System.out.println("Recuperar un estudiante por su numero de libreta");
+
+        long libreta=12456;
+        Estudiante recuperado= estudianteDao.obtenerEstudiantePorLu(libreta);
+        System.out.println(recuperado.toString());
+
+        System.out.println("buscar por genero: femenino");
+        List<Estudiante>mujeres= estudianteDao.obtenerEstudiantesPorGenero("femenino");
+        for(Estudiante estudiante:mujeres){
+            System.out.println(estudiante.toString());
+        }
+        System.out.println("buscar por genero: masculino");
+        List<Estudiante>hombres= estudianteDao.obtenerEstudiantesPorGenero("masculino");
+        for(Estudiante estudiante:hombres){
+            System.out.println(estudiante.toString());
+        }
+
+        System.out.println("Listado de carreras ordenada por cantidad de inscriptos");
+        List<CarreraConCantInscriptosDTO>carreras= inscripcionDao.listarCarrerasPorCantidadInscriptos();
+        for(CarreraConCantInscriptosDTO reporte:carreras){
+            System.out.println(reporte.toString());
+        }
+
+        System.out.println("Listar los alumnos que estudian Licenciatura en Astronomia y son de Tandil");
+        Carrera carrera=carreraDao.selectById(13);
+        List<Estudiante>estudiantesBuscados= estudianteDao.recuperarEstudiantesPorCarreraYCiudad(carrera,"Tandil");
+        for(Estudiante estudiante:estudiantesBuscados){
+            System.out.println(estudiante.toString());
+        }
+
+        List<ReporteCarreraDTO> reporte=carreraDao.generarReporteCarreras();
+        if(reporte!=null){
+            for(ReporteCarreraDTO r:reporte){
+                System.out.println(r.toString());
+            }
+        }else{
+            System.out.println("No hay carreras");
+        }
+        */
 
 
 
