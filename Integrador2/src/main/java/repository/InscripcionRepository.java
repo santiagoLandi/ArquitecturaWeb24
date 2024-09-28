@@ -13,9 +13,17 @@ import java.util.List;
 
 public class InscripcionRepository implements Repository<Inscripcion> {
     private EntityManager em;
+    private static InscripcionRepository instance;
 
-    public InscripcionRepository(EntityManager em) {
+    private InscripcionRepository(EntityManager em) {
         this.em = em;
+    }
+
+    public static InscripcionRepository getInstance(EntityManager em) {
+        if (instance == null)
+            instance = new InscripcionRepository(em);
+        return instance;
+
     }
 
     @Override

@@ -4,11 +4,11 @@ public class ReporteCarreraDTO {
     private String nombreCarrera;
     private Integer anioInscripcion;
     private Integer anioGraduacion;
-    private long cantidadInscriptos;
-    private long cantidadGraduados;
+    private Long cantidadInscriptos;
+    private Long cantidadGraduados;
 
     public ReporteCarreraDTO() {}
-    public ReporteCarreraDTO(String nombreCarrera, Integer anioInscripcion, Integer anioGraduacion, long cantidadInscriptos, long cantidadGraduados) {
+    public ReporteCarreraDTO(String nombreCarrera, Integer anioInscripcion, Integer anioGraduacion, Long cantidadInscriptos, Long cantidadGraduados) {
         this.nombreCarrera = nombreCarrera;
         this.anioInscripcion = anioInscripcion;
         this.anioGraduacion = anioGraduacion;

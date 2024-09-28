@@ -11,10 +11,16 @@ import java.util.List;
 
 public class EstudianteRepository implements Repository<Estudiante> {
     private EntityManager em;
+    private static EstudianteRepository instance;
 
-    public EstudianteRepository() {}
-    public EstudianteRepository(EntityManager em) {
+    private EstudianteRepository(EntityManager em) {
         this.em = em;
+    }
+
+    public static EstudianteRepository getInstance(EntityManager em) {
+        if (instance == null)
+            instance = new EstudianteRepository(em);
+        return instance;
     }
 
     @Override
@@ -160,6 +166,7 @@ public class EstudianteRepository implements Repository<Estudiante> {
 
     // e) Recuperar todos los estudiantes en base a su género
     public List<Estudiante> obtenerEstudiantesPorGenero(String genero) {
+
         try {
             return em.createQuery("SELECT e FROM Estudiante e WHERE e.genero = :genero", Estudiante.class)
                     .setParameter("genero", genero)
@@ -180,6 +187,17 @@ public class EstudianteRepository implements Repository<Estudiante> {
                     .getResultList();
         } catch (PersistenceException e) {
             System.out.println("Error al obtener estudiantes por carrera y residencia! " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public Estudiante selectByName(String nombre) {
+        try{
+            return em.createQuery("SELECT e FROM Estudiante e WHERE e.nombres = :nombre", Estudiante.class)
+                    .setParameter("nombre",nombre)
+                    .getSingleResult();
+        } catch (Exception e) {
+            System.out.println("Error al obtener estudiante por nombre! " + e.getMessage());
             throw e;
         }
     }

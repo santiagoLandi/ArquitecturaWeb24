@@ -6,8 +6,8 @@ import repository.InscripcionRepository;
 import entities.Carrera;
 import entities.Estudiante;
 import entities.Inscripcion;
-import factories.Factory;
-import factories.MySqlFactory;
+import factories.RepositoryFactory;
+import factories.MySqlRepositoryFactory;
 
 import java.util.List;
 
@@ -41,58 +41,51 @@ public class Main {
         Inscripcion i10= new Inscripcion(2011,c1,e8);
         Inscripcion i11= new Inscripcion(2024,c3,e9);
 
-        Factory dao= MySqlFactory.getDAOFactory(1);
-        Factory dao1= MySqlFactory.getDAOFactory(1);
-        Factory dao2= MySqlFactory.getDAOFactory(1);
+        RepositoryFactory factory= MySqlRepositoryFactory.getRepositoryFactory(1);
 
+        assert factory != null;
+        EstudianteRepository estudianteRepo=  factory.getEstudianteRepository();
+        InscripcionRepository inscripcionRepo=factory.getInscripcionRepository();
+        CarreraRepository carreraRepo=factory.getCarreraRepository();
+    /*
+        estudianteRepo.insert(e);
+        estudianteRepo.insert(e1);
+        estudianteRepo.insert(e2);
+        estudianteRepo.insert(e3);
+        estudianteRepo.insert(e4);
+        estudianteRepo.insert(e5);
+        estudianteRepo.insert(e6);
+        estudianteRepo.insert(e7);
+        estudianteRepo.insert(e8);
+        estudianteRepo.insert(e9);
 
-        assert dao != null;
-        EstudianteRepository estudianteDao=  dao.getEstudianteDAO();
-        assert dao1 != null;
-        InscripcionRepository inscripcionDao=dao1.getInscripcionDAO();
-        assert dao2 != null;
-        CarreraRepository carreraDao=dao2.getCarreraDAO();
+        carreraRepo.insert(c1);
+        carreraRepo.insert(c2);
+        carreraRepo.insert(c3);
 
-        estudianteDao.insert(e);
-        estudianteDao.insert(e1);
-        estudianteDao.insert(e2);
-        estudianteDao.insert(e3);
-        estudianteDao.insert(e4);
-        estudianteDao.insert(e5);
-        estudianteDao.insert(e6);
-        estudianteDao.insert(e7);
-        estudianteDao.insert(e8);
-        estudianteDao.insert(e9);
+        inscripcionRepo.insert(i);
+        inscripcionRepo.insert(i1);
+        inscripcionRepo.insert(i2);
+        inscripcionRepo.insert(i3);
+        inscripcionRepo.insert(i4);
+        inscripcionRepo.insert(i5);
+        inscripcionRepo.insert(i6);
+        inscripcionRepo.insert(i7);
+        inscripcionRepo.insert(i8);
+        inscripcionRepo.insert(i9);
+        inscripcionRepo.insert(i10);
+        inscripcionRepo.insert(i11);
 
-        carreraDao.insert(c1);
-        carreraDao.insert(c2);
-        carreraDao.insert(c3);
+        inscripcionRepo.fijarAnioDeGraduacion(i,2018);
+        inscripcionRepo.fijarAnioDeGraduacion(i1,2024);
+        inscripcionRepo.fijarAnioDeGraduacion(i3,2022);
+        inscripcionRepo.fijarAnioDeGraduacion(i5,2023);
+        inscripcionRepo.fijarAnioDeGraduacion(i7,2018);
+        inscripcionRepo.fijarAnioDeGraduacion(i9,2019);
+        inscripcionRepo.fijarAnioDeGraduacion(i10,2017);
 
-        inscripcionDao.insert(i);
-        inscripcionDao.insert(i1);
-        inscripcionDao.insert(i2);
-        inscripcionDao.insert(i3);
-        inscripcionDao.insert(i4);
-        inscripcionDao.insert(i5);
-        inscripcionDao.insert(i6);
-        inscripcionDao.insert(i7);
-        inscripcionDao.insert(i8);
-        inscripcionDao.insert(i9);
-        inscripcionDao.insert(i10);
-        inscripcionDao.insert(i11);
-
-        inscripcionDao.fijarAnioDeGraduacion(i,2018);
-        inscripcionDao.fijarAnioDeGraduacion(i1,2024);
-        inscripcionDao.fijarAnioDeGraduacion(i3,2022);
-        inscripcionDao.fijarAnioDeGraduacion(i5,2023);
-        inscripcionDao.fijarAnioDeGraduacion(i7,2018);
-        inscripcionDao.fijarAnioDeGraduacion(i9,2019);
-        inscripcionDao.fijarAnioDeGraduacion(i10,2017);
-
-
-
-
-        List<ReporteCarreraDTO> reporte=carreraDao.generarReporteCarreras();
+*/
+        List<ReporteCarreraDTO> reporte=carreraRepo.generarReporteCarreras();
         if(reporte!=null){
             for(ReporteCarreraDTO r:reporte){
                 System.out.println(r.toString());
@@ -102,7 +95,7 @@ public class Main {
         }
 
         System.out.println("Listado de estudiantes ordenados por nombre");
-        List<Estudiante>estudiantesOrdenados=estudianteDao.obtenerEstudiantesOrdenadosPorNombre();
+        List<Estudiante>estudiantesOrdenados=estudianteRepo.obtenerEstudiantesOrdenadosPorNombre();
         for(Estudiante estudiante:estudiantesOrdenados){
             System.out.println(estudiante.toString());
         }
@@ -110,34 +103,34 @@ public class Main {
         System.out.println("Recuperar un estudiante por su numero de libreta");
 
         long libreta=12456;
-        Estudiante recuperado= estudianteDao.obtenerEstudiantePorLu(libreta);
+        Estudiante recuperado= estudianteRepo.obtenerEstudiantePorLu(libreta);
         System.out.println(recuperado.toString());
 
         System.out.println("buscar por genero: femenino");
-        List<Estudiante>mujeres= estudianteDao.obtenerEstudiantesPorGenero("femenino");
+        List<Estudiante>mujeres= estudianteRepo.obtenerEstudiantesPorGenero("femenino");
         for(Estudiante estudiante:mujeres){
             System.out.println(estudiante.toString());
         }
         System.out.println("buscar por genero: masculino");
-        List<Estudiante>hombres= estudianteDao.obtenerEstudiantesPorGenero("masculino");
+        List<Estudiante>hombres= estudianteRepo.obtenerEstudiantesPorGenero("masculino");
         for(Estudiante estudiante:hombres){
             System.out.println(estudiante.toString());
         }
 
         System.out.println("Listado de carreras ordenada por cantidad de inscriptos");
-        List<CarreraConCantInscriptosDTO>carreras= inscripcionDao.listarCarrerasPorCantidadInscriptos();
+        List<CarreraConCantInscriptosDTO>carreras= inscripcionRepo.listarCarrerasPorCantidadInscriptos();
         for(CarreraConCantInscriptosDTO r:carreras){
             System.out.println(r.toString());
         }
 
         System.out.println("Listar los alumnos que estudian Licenciatura en Astronomia y son de Tandil");
-        Carrera carrera=carreraDao.selectById(13);
-        List<Estudiante>estudiantesBuscados= estudianteDao.recuperarEstudiantesPorCarreraYCiudad(carrera,"Tandil");
+        Carrera carrera=carreraRepo.selectById(1);
+        List<Estudiante>estudiantesBuscados= estudianteRepo.recuperarEstudiantesPorCarreraYCiudad(carrera,"Tandil");
         for(Estudiante estudiante:estudiantesBuscados){
             System.out.println(estudiante.toString());
         }
 
-        List<ReporteCarreraDTO>informe=carreraDao.generarReporteCarreras();
+        List<ReporteCarreraDTO>informe=carreraRepo.generarReporteCarreras();
         if(informe!=null){
             for(ReporteCarreraDTO r:informe){
                 System.out.println(r.toString());
@@ -147,7 +140,9 @@ public class Main {
         }
 
 
-
+        System.out.println("Vamos a buscar un estudiante por nombre Alejo");
+        Estudiante est= estudianteRepo.selectByName("Alejo");
+        System.out.println(est.toString());
 
 
 

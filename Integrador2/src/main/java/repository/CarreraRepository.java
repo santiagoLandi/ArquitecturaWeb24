@@ -12,11 +12,17 @@ import java.util.List;
 
 public class CarreraRepository implements Repository<Carrera> {
     private EntityManager em;
+    private static CarreraRepository instance;
 
-    public CarreraRepository() {}
 
-    public CarreraRepository(EntityManager em) {
+    private CarreraRepository(EntityManager em) {
         this.em = em;
+    }
+
+    public static CarreraRepository getInstance(EntityManager em) {
+        if (instance == null)
+            instance = new CarreraRepository(em);
+        return instance;
     }
 
 
