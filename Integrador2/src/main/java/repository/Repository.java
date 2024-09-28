@@ -1,8 +1,8 @@
-package daos;
+package repository;
 
 import java.util.List;
 
-public interface Dao<T> {
+public interface Repository<T> {
     void insert(T t);
 
     T selectById(int id);

@@ -1,11 +1,11 @@
-import daos.CarreraDao;
-import daos.EstudianteDao;
-import daos.InscripcionDao;
 import dtos.CarreraConCantInscriptosDTO;
 import dtos.ReporteCarreraDTO;
-import entidades.Carrera;
-import entidades.Estudiante;
-import entidades.Inscripcion;
+import repository.CarreraRepository;
+import repository.EstudianteRepository;
+import repository.InscripcionRepository;
+import entities.Carrera;
+import entities.Estudiante;
+import entities.Inscripcion;
 import factories.Factory;
 import factories.MySqlFactory;
 
@@ -47,12 +47,12 @@ public class Main {
 
 
         assert dao != null;
-        EstudianteDao estudianteDao=  dao.getEstudianteDAO();
+        EstudianteRepository estudianteDao=  dao.getEstudianteDAO();
         assert dao1 != null;
-        InscripcionDao inscripcionDao=dao1.getInscripcionDAO();
+        InscripcionRepository inscripcionDao=dao1.getInscripcionDAO();
         assert dao2 != null;
-        CarreraDao carreraDao=dao2.getCarreraDAO();
-        /*
+        CarreraRepository carreraDao=dao2.getCarreraDAO();
+
         estudianteDao.insert(e);
         estudianteDao.insert(e1);
         estudianteDao.insert(e2);
@@ -80,13 +80,21 @@ public class Main {
         inscripcionDao.insert(i9);
         inscripcionDao.insert(i10);
         inscripcionDao.insert(i11);
-        */
-        inscripcionDao.fijarAnioDeGraduacion(i12024);
-        inscripcionDao.fijarAnioDeGraduacion(e2,c2,2024);
-        /*
-        List<Reporte> reporte=carreraDao.generarReporteCarreras();
+
+        inscripcionDao.fijarAnioDeGraduacion(i,2018);
+        inscripcionDao.fijarAnioDeGraduacion(i1,2024);
+        inscripcionDao.fijarAnioDeGraduacion(i3,2022);
+        inscripcionDao.fijarAnioDeGraduacion(i5,2023);
+        inscripcionDao.fijarAnioDeGraduacion(i7,2018);
+        inscripcionDao.fijarAnioDeGraduacion(i9,2019);
+        inscripcionDao.fijarAnioDeGraduacion(i10,2017);
+
+
+
+
+        List<ReporteCarreraDTO> reporte=carreraDao.generarReporteCarreras();
         if(reporte!=null){
-            for(Reporte r:reporte){
+            for(ReporteCarreraDTO r:reporte){
                 System.out.println(r.toString());
             }
         }else{
@@ -118,8 +126,8 @@ public class Main {
 
         System.out.println("Listado de carreras ordenada por cantidad de inscriptos");
         List<CarreraConCantInscriptosDTO>carreras= inscripcionDao.listarCarrerasPorCantidadInscriptos();
-        for(CarreraConCantInscriptosDTO reporte:carreras){
-            System.out.println(reporte.toString());
+        for(CarreraConCantInscriptosDTO r:carreras){
+            System.out.println(r.toString());
         }
 
         System.out.println("Listar los alumnos que estudian Licenciatura en Astronomia y son de Tandil");
@@ -129,15 +137,15 @@ public class Main {
             System.out.println(estudiante.toString());
         }
 
-        List<ReporteCarreraDTO> reporte=carreraDao.generarReporteCarreras();
-        if(reporte!=null){
-            for(ReporteCarreraDTO r:reporte){
+        List<ReporteCarreraDTO>informe=carreraDao.generarReporteCarreras();
+        if(informe!=null){
+            for(ReporteCarreraDTO r:informe){
                 System.out.println(r.toString());
             }
         }else{
             System.out.println("No hay carreras");
         }
-        */
+
 
 
 

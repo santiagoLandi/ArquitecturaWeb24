@@ -1,19 +1,19 @@
-package daos;
+package repository;
 
-import entidades.Carrera;
-import entidades.Estudiante;
-import entidades.Inscripcion;
+import entities.Carrera;
+import entities.Estudiante;
+import entities.Inscripcion;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import java.util.List;
 
-public class EstudianteDao implements Dao<Estudiante> {
+public class EstudianteRepository implements Repository<Estudiante> {
     private EntityManager em;
 
-    public EstudianteDao() {}
-    public EstudianteDao(EntityManager em) {
+    public EstudianteRepository() {}
+    public EstudianteRepository(EntityManager em) {
         this.em = em;
     }
 

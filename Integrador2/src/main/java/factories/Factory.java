@@ -1,16 +1,16 @@
 package factories;
 
-import daos.CarreraDao;
-import daos.EstudianteDao;
-import daos.InscripcionDao;
+import repository.CarreraRepository;
+import repository.EstudianteRepository;
+import repository.InscripcionRepository;
 
 public abstract class Factory {
     public static final int MYSQL_JDBC = 1;
 
 
-    public abstract CarreraDao getCarreraDAO();
-    public abstract EstudianteDao getEstudianteDAO();
-    public abstract InscripcionDao getInscripcionDAO();
+    public abstract CarreraRepository getCarreraDAO();
+    public abstract EstudianteRepository getEstudianteDAO();
+    public abstract InscripcionRepository getInscripcionDAO();
 
     public static Factory getDAOFactory(int whichFactory) {
         switch (whichFactory) {

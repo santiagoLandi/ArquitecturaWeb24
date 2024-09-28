@@ -1,9 +1,9 @@
-package daos;
+package repository;
 
 import dtos.CarreraConCantInscriptosDTO;
-import entidades.Carrera;
-import entidades.Estudiante;
-import entidades.Inscripcion;
+import entities.Carrera;
+import entities.Estudiante;
+import entities.Inscripcion;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -11,10 +11,10 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class InscripcionDao implements Dao<Inscripcion> {
+public class InscripcionRepository implements Repository<Inscripcion> {
     private EntityManager em;
 
-    public InscripcionDao(EntityManager em) {
+    public InscripcionRepository(EntityManager em) {
         this.em = em;
     }
 
@@ -148,17 +148,17 @@ public class InscripcionDao implements Dao<Inscripcion> {
     }
 
 
-    public void fijarAnioDeGraduacion(Inscripcion,Integer anioGraduacion) {
+    public void fijarAnioDeGraduacion(Inscripcion i,Integer anioGraduacion) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         try{
-            String jpql = "SELECT i FROM Inscripcion i WHERE i. = :estudiante AND i.carrera = :carrera";
-            TypedQuery<Inscripcion> query = em.createQuery(jpql, Inscripcion.class);
-            Inscripcion inscripcion = query.getSingleResult();
-            if (inscripcion != null) {
-                inscripcion.setAnioEgreso(anioGraduacion);
-                em.merge(inscripcion);
+            Inscripcion buscada=em.find(Inscripcion.class, i.getId());
+            System.out.println(buscada.getAnioInscripcion());
+            if (buscada != null) {
+                i.setAnioEgreso(anioGraduacion);
+                em.merge(i);
             }
+            transaction.commit();
         }catch (Exception e) {
             System.out.println("Error al setear anio graduacion en alumno: " + e.getMessage());
         }

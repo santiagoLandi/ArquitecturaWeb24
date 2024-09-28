@@ -1,9 +1,8 @@
-package daos;
+package repository;
 
-import dtos.CarreraConCantInscriptosDTO;
 import dtos.ReporteCarreraDTO;
-import entidades.Carrera;
-import entidades.Inscripcion;
+import entities.Carrera;
+import entities.Inscripcion;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -11,12 +10,12 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class CarreraDao implements Dao<Carrera> {
+public class CarreraRepository implements Repository<Carrera> {
     private EntityManager em;
 
-    public CarreraDao() {}
+    public CarreraRepository() {}
 
-    public CarreraDao(EntityManager em) {
+    public CarreraRepository(EntityManager em) {
         this.em = em;
     }
 

@@ -1,8 +1,8 @@
 package factories;
 
-import daos.CarreraDao;
-import daos.EstudianteDao;
-import daos.InscripcionDao;
+import repository.CarreraRepository;
+import repository.EstudianteRepository;
+import repository.InscripcionRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -12,23 +12,23 @@ public class MySqlFactory extends Factory {
     private static final String PERSISTENCE_UNIT_NAME = "Integrador2";
 
     @Override
-    public CarreraDao getCarreraDAO() {
+    public CarreraRepository getCarreraDAO() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         EntityManager em = emf.createEntityManager();
-        return new CarreraDao(em);
+        return new CarreraRepository(em);
     }
 
     @Override
-    public EstudianteDao getEstudianteDAO() {
+    public EstudianteRepository getEstudianteDAO() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         EntityManager em = emf.createEntityManager();
-        return new EstudianteDao(em);
+        return new EstudianteRepository(em);
     }
 
     @Override
-    public InscripcionDao getInscripcionDAO() {
+    public InscripcionRepository getInscripcionDAO() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         EntityManager em = emf.createEntityManager();
-        return new InscripcionDao(em);
+        return new InscripcionRepository(em);
     }
 }
