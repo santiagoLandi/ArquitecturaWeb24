@@ -4,11 +4,12 @@ import dtos.ReporteCarreraDTO;
 import entities.Carrera;
 import entities.Inscripcion;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CarreraRepository implements Repository<Carrera> {
     private EntityManager em;
@@ -137,6 +138,7 @@ public class CarreraRepository implements Repository<Carrera> {
         }
     }
 
+    /*
     public List<ReporteCarreraDTO> generarReporteCarreras() {
         try {
             String jpql = "SELECT new dtos.ReporteCarreraDTO(c.nombre, " +
@@ -156,5 +158,100 @@ public class CarreraRepository implements Repository<Carrera> {
             return null;
         }
     }
+    */
+    /*
+    public List<ReporteCarreraDTO> generarReporteCarreras() {
+        try {
+            /*
+            String jpql = "SELECT new dtos.ReporteCarreraDTO(c.nombre, " +
+                    "i.anioInscripcion, " +
+                    "(SELECT COUNT(i1) FROM Inscripcion i1 WHERE i1.anioInscripcion = i.anioInscripcion AND i1.carrera = c), " + // Cantidad de inscriptos por año
+                    "(SELECT COUNT(i2) FROM Inscripcion i2 WHERE i2.anioEgreso = i.anioInscripcion AND i2.carrera = c) ) " + // Cantidad de egresados por año
+                    "FROM Inscripcion i " +
+                    "JOIN i.carrera c " +
+                    "ORDER BY c.nombre ASC, i.anioInscripcion ASC";
 
+            String sql ="SELECT c.nombre AS nombreCarrera, " +
+                    "EXTRACT(YEAR FROM i.anioInscripcion) AS anio, " +
+                    "COUNT(i) AS cantInscriptos, " +
+                    "SUM(CASE WHEN i.graduado IS NOT NULL THEN 1 ELSE 0 END) AS cantEgresados " +
+                    "FROM Inscripcion i " +
+                    "JOIN i.carrera c " +
+                    "GROUP BY c.nombre, anio " +
+                    "ORDER BY c.nombre ASC, 2 ASC";
+            Query query= em.createQuery(sql);
+            List<Object[]> results = query.getResultList();
+
+            return results.stream()
+                    .map(result -> new ReporteCarreraDTO(
+                            (String) result[0],
+                            (Integer) result[1], // Año
+                            (Long) result[2],  // Cantidad de inscriptos
+                            (Long) result[3]   // Cantidad de egresados
+                    ))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.out.println("Error al generar reporte de carreras: " + e.getMessage());
+            return null;
+        } finally {
+            em.close();
+        }
+
+    }
+    */
+    public List<ReporteCarreraDTO> getInscriptosYEgresadosPorAnio() {
+        try {
+            // Consulta para inscriptos
+            String jpqlInscriptos = "SELECT c.nombre AS nombreCarrera, i.anioInscripcion AS anio, COUNT(i) AS cantInscriptos " +
+                    "FROM Inscripcion i JOIN i.carrera c " +
+                    "GROUP BY c.nombre, i.anioInscripcion " +
+                    "ORDER BY c.nombre ASC, i.anioInscripcion ASC";
+            Query queryInscriptos = em.createQuery(jpqlInscriptos);
+            List<Object[]> inscriptosResults = queryInscriptos.getResultList();
+
+            // Consulta para egresados
+            String jpqlEgresados = "SELECT c.nombre AS nombreCarrera, i.anioEgreso AS anio, COUNT(i) AS cantEgresados " +
+                    "FROM Inscripcion i JOIN i.carrera c " +
+                    "WHERE i.anioEgreso IS NOT NULL " +
+                    "GROUP BY c.nombre, i.anioEgreso " +
+                    "ORDER BY c.nombre ASC, i.anioEgreso ASC";
+            Query queryEgresados = em.createQuery(jpqlEgresados);
+            List<Object[]> egresadosResults = queryEgresados.getResultList();
+
+            // Combinar resultados
+            Map<String, Map<Integer, ReporteCarreraDTO>> reporteMap = new HashMap<>();
+
+            for (Object[] result : inscriptosResults) {
+                String nombreCarrera = (String) result[0];
+                int anio = (Integer) result[1];
+                long cantInscriptos = (Long) result[2];
+
+                reporteMap
+                        .computeIfAbsent(nombreCarrera, k -> new HashMap<>())
+                        .put(anio, new ReporteCarreraDTO(nombreCarrera, anio, cantInscriptos, 0));
+            }
+
+            for (Object[] result : egresadosResults) {
+                String nombreCarrera = (String) result[0];
+                int anio = (Integer) result[1];
+                long cantEgresados = (Long) result[2];
+
+                reporteMap
+                        .computeIfAbsent(nombreCarrera, k -> new HashMap<>())
+                        .computeIfAbsent(anio, k -> new ReporteCarreraDTO(nombreCarrera, anio, 0, 0))
+                        .setCantidadGraduados(cantEgresados);
+            }
+
+            return reporteMap.values().stream()
+                    .flatMap(map -> map.values().stream())
+                    .sorted(Comparator.comparing(ReporteCarreraDTO::getNombreCarrera)
+                            .thenComparing(ReporteCarreraDTO::getAnio))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("Error al generar reporte de carreras: " + e.getMessage());
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }

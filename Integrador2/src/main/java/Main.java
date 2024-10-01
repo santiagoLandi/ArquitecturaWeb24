@@ -85,27 +85,20 @@ public class Main {
         inscripcionRepo.fijarAnioDeGraduacion(i10,2017);
 
 */
-        List<ReporteCarreraDTO> reporte=carreraRepo.generarReporteCarreras();
-        if(reporte!=null){
-            for(ReporteCarreraDTO r:reporte){
-                System.out.println(r.toString());
-            }
-        }else{
-            System.out.println("No hay carreras");
-        }
-
+        /*
+        //2c) recuperar todos los estudiantes, y especificar algún criterio de ordenamiento simple.
         System.out.println("Listado de estudiantes ordenados por nombre");
         List<Estudiante>estudiantesOrdenados=estudianteRepo.obtenerEstudiantesOrdenadosPorNombre();
         for(Estudiante estudiante:estudiantesOrdenados){
             System.out.println(estudiante.toString());
         }
-
+        //2d) recuperar un estudiante, en base a su número de libreta universitaria.
         System.out.println("Recuperar un estudiante por su numero de libreta");
 
         long libreta=12456;
         Estudiante recuperado= estudianteRepo.obtenerEstudiantePorLu(libreta);
         System.out.println(recuperado.toString());
-
+        //2e) recuperar todos los estudiantes, en base a su género.
         System.out.println("buscar por genero: femenino");
         List<Estudiante>mujeres= estudianteRepo.obtenerEstudiantesPorGenero("femenino");
         for(Estudiante estudiante:mujeres){
@@ -116,21 +109,26 @@ public class Main {
         for(Estudiante estudiante:hombres){
             System.out.println(estudiante.toString());
         }
-
+        //2f) recuperar las carreras con estudiantes inscriptos, y ordenar por cantidad de inscriptos.
         System.out.println("Listado de carreras ordenada por cantidad de inscriptos");
         List<CarreraConCantInscriptosDTO>carreras= inscripcionRepo.listarCarrerasPorCantidadInscriptos();
         for(CarreraConCantInscriptosDTO r:carreras){
             System.out.println(r.toString());
         }
-
+        //2g) recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia.
         System.out.println("Listar los alumnos que estudian Licenciatura en Astronomia y son de Tandil");
         Carrera carrera=carreraRepo.selectById(1);
         List<Estudiante>estudiantesBuscados= estudianteRepo.recuperarEstudiantesPorCarreraYCiudad(carrera,"Tandil");
         for(Estudiante estudiante:estudiantesBuscados){
             System.out.println(estudiante.toString());
         }
+        /*
+        3) Generar un reporte de las carreras, que para cada carrera incluya información de los
+           inscriptos y egresados por año. Se deben ordenar las carreras alfabéticamente, y presentar
+           los años de manera cronológica.
+         */
 
-        List<ReporteCarreraDTO>informe=carreraRepo.generarReporteCarreras();
+        List<ReporteCarreraDTO>informe=carreraRepo.getInscriptosYEgresadosPorAnio();
         if(informe!=null){
             for(ReporteCarreraDTO r:informe){
                 System.out.println(r.toString());
@@ -139,11 +137,11 @@ public class Main {
             System.out.println("No hay carreras");
         }
 
-
+        /*
         System.out.println("Vamos a buscar un estudiante por nombre Alejo");
         Estudiante est= estudianteRepo.selectByName("Alejo");
         System.out.println(est.toString());
-
+        */
 
 
     }

@@ -2,25 +2,54 @@ package dtos;
 
 public class ReporteCarreraDTO {
     private String nombreCarrera;
-    private Integer anioInscripcion;
-    private Integer anioGraduacion;
-    private Long cantidadInscriptos;
-    private Long cantidadGraduados;
+    private Integer anio;
+    private long cantidadInscriptos;
+    private long cantidadGraduados;
 
     public ReporteCarreraDTO() {}
-    public ReporteCarreraDTO(String nombreCarrera, Integer anioInscripcion, Integer anioGraduacion, Long cantidadInscriptos, Long cantidadGraduados) {
+    public ReporteCarreraDTO(String nombreCarrera, Integer anio, long cantidadInscriptos, long cantidadGraduados) {
         this.nombreCarrera = nombreCarrera;
-        this.anioInscripcion = anioInscripcion;
-        this.anioGraduacion = anioGraduacion;
+        this.anio=anio;
         this.cantidadInscriptos = cantidadInscriptos;
+        this.cantidadGraduados = cantidadGraduados;
+    }
+
+    public String getNombreCarrera() {
+        return nombreCarrera;
+    }
+
+    public void setNombreCarrera(String nombreCarrera) {
+        this.nombreCarrera = nombreCarrera;
+    }
+
+    public Integer getAnio() {
+        return anio;
+    }
+
+    public void setAnio(Integer anio) {
+        this.anio = anio;
+    }
+
+    public long getCantidadInscriptos() {
+        return cantidadInscriptos;
+    }
+
+    public void setCantidadInscriptos(Long cantidadInscriptos) {
+        this.cantidadInscriptos = cantidadInscriptos;
+    }
+
+    public long getCantidadGraduados() {
+        return cantidadGraduados;
+    }
+
+    public void setCantidadGraduados(Long cantidadGraduados) {
         this.cantidadGraduados = cantidadGraduados;
     }
 
     @Override
     public String toString() {
         return "nombreCarrera='" + nombreCarrera + '\'' +
-                ", anioInscripcion=" + anioInscripcion +
-                ", anioGraduacion=" + anioGraduacion +
+                ", anioInscripcion=" + anio +
                 ", cantidadInscriptos=" + cantidadInscriptos +
                 ", cantidadGraduados=" + cantidadGraduados +
                 '}';
