@@ -69,18 +69,15 @@ public class InscripcionRepository implements Repository<Inscripcion> {
         transaction.begin();
 
         try {
-            // Buscar si la inscripción existe
             Inscripcion inscripcionExistente = em.find(Inscripcion.class, inscripcion.getId());
 
             if (inscripcionExistente != null) {
-                // Actualizar los campos necesarios
                 inscripcionExistente.setAnioInscripcion(inscripcion.getAnioInscripcion());
                 inscripcionExistente.setAnioEgreso(inscripcion.getAnioEgreso());
                 inscripcionExistente.setGraduado(inscripcion.isGraduado());
                 inscripcionExistente.setCarrera(inscripcion.getCarrera());
                 inscripcionExistente.setEstudiante(inscripcion.getEstudiante());
 
-                // Persistir los cambios
                 em.merge(inscripcionExistente);
                 transaction.commit();
                 return true;
@@ -102,11 +99,9 @@ public class InscripcionRepository implements Repository<Inscripcion> {
         transaction.begin();
 
         try {
-            // Buscar la inscripción por ID
             Inscripcion inscripcion = em.find(Inscripcion.class, id);
 
             if (inscripcion != null) {
-                // Eliminar la inscripción
                 em.remove(inscripcion);
                 transaction.commit();
                 return true;

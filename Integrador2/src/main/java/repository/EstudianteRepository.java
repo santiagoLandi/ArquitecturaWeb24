@@ -1,5 +1,6 @@
 package repository;
 
+import dtos.EstudianteDTO;
 import entities.Carrera;
 import entities.Estudiante;
 import entities.Inscripcion;
@@ -61,19 +62,17 @@ public class EstudianteRepository implements Repository<Estudiante> {
         }
     }
 
-    // Al tener cascade = CascadeType.ALL, cualquier operación realizada en la entidad Estudiante
-    // (insertar, actualizar, eliminar) también afectará automáticamente a las entidades relacionadas
     @Override
     public boolean update(Estudiante estudiante) {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
 
         try {
-            // Buscar si el estudiante existe
+
             Estudiante estudianteExistente = em.find(Estudiante.class, estudiante.getId());
 
             if (estudianteExistente != null) {
-                // Actualizar los campos necesarios
+
                 estudianteExistente.setNombres(estudiante.getNombres());
                 estudianteExistente.setApellido(estudiante.getApellido());
                 estudianteExistente.setGenero(estudiante.getGenero());
@@ -81,8 +80,6 @@ public class EstudianteRepository implements Repository<Estudiante> {
                 estudianteExistente.setCiudadResidencia(estudiante.getCiudadResidencia());
                 estudianteExistente.setLibretaUniv(estudiante.getLibretaUniv());
 
-                // Actualizar la lista de inscripciones
-                // Eliminar las inscripciones antiguas que no están en la nueva lista
                 List<Inscripcion> inscripcionesExistentes = estudianteExistente.getInscripciones();
 
                 for (Inscripcion inscripcion : inscripcionesExistentes) {
@@ -91,14 +88,12 @@ public class EstudianteRepository implements Repository<Estudiante> {
                     }
                 }
 
-                // Agregar nuevas inscripciones que no están en la lista existente
                 for (Inscripcion inscripcion : estudiante.getInscripciones()) {
                     if (!inscripcionesExistentes.contains(inscripcion)) {
                         estudianteExistente.addInscripcion(inscripcion);
                     }
                 }
 
-                // Persistir los cambios
                 em.merge(estudianteExistente);
                 transaction.commit();
                 return true;
@@ -114,8 +109,6 @@ public class EstudianteRepository implements Repository<Estudiante> {
         }
     }
 
-    // Al tener cascade = CascadeType.ALL, cualquier operación realizada en la entidad Estudiante
-    // (insertar, actualizar, eliminar) también afectará automáticamente a las entidades relacionadas
     @Override
     public boolean delete(int id) {
         EntityTransaction transaction = em.getTransaction();
@@ -140,12 +133,12 @@ public class EstudianteRepository implements Repository<Estudiante> {
         }
     }
 
-    // b) Matricular un estudiante en una carrera (Consulta implementada en JpaInscripcionDAO)
-
     // c) Recuperar todos los estudiantes, y especificar algún criterio de ordenamiento simple -> Por nombre
-    public List<Estudiante> obtenerEstudiantesOrdenadosPorNombre() {
+    public List<EstudianteDTO> obtenerEstudiantesOrdenadosPorNombre() {
         try {
-            return em.createQuery("SELECT e FROM Estudiante e ORDER BY e.nombres", Estudiante.class).getResultList();
+            return em.createQuery("SELECT new dtos.EstudianteDTO(e.nombres,e.apellido,e.anioNacimiento, " +
+                    "e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) " +
+                    "FROM Estudiante e ORDER BY e.nombres", EstudianteDTO.class).getResultList();
         } catch (PersistenceException e) {
             System.out.println("Error al obtener estudiantes ordenados por nombre! " + e.getMessage());
             throw e;
@@ -153,9 +146,12 @@ public class EstudianteRepository implements Repository<Estudiante> {
     }
 
     // d) Recuperar un estudiante en base a su número de libreta universitaria
-    public Estudiante obtenerEstudiantePorLu(long lu) {
+    public EstudianteDTO obtenerEstudiantePorLu(long lu) {
         try {
-            return em.createQuery("SELECT e FROM Estudiante e WHERE e.libretaUniv = :lu", Estudiante.class)
+            return em.createQuery("SELECT new dtos.EstudianteDTO(e.nombres,e.apellido,e.anioNacimiento," +
+                                     "e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) " +
+                                     "FROM Estudiante e " +
+                                     "WHERE e.libretaUniv = :lu", EstudianteDTO.class)
                     .setParameter("lu", lu)
                     .getSingleResult();
         } catch (PersistenceException e) {
@@ -165,10 +161,13 @@ public class EstudianteRepository implements Repository<Estudiante> {
     }
 
     // e) Recuperar todos los estudiantes en base a su género
-    public List<Estudiante> obtenerEstudiantesPorGenero(String genero) {
+    public List<EstudianteDTO> obtenerEstudiantesPorGenero(String genero) {
 
         try {
-            return em.createQuery("SELECT e FROM Estudiante e WHERE e.genero = :genero", Estudiante.class)
+            return em.createQuery("SELECT new dtos.EstudianteDTO(e.nombres,e.apellido,e.anioNacimiento," +
+                                     "e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) " +
+                                     "FROM Estudiante e " +
+                                     "WHERE e.genero = :genero", EstudianteDTO.class)
                     .setParameter("genero", genero)
                     .getResultList();
         } catch (PersistenceException e) {
@@ -178,10 +177,13 @@ public class EstudianteRepository implements Repository<Estudiante> {
     }
 
     // g) Recuperar los estudiantes de una determinada carrera, filtrado por ciudad de residencia
-    public List<Estudiante> recuperarEstudiantesPorCarreraYCiudad(Carrera carrera, String ciudadResidencia) {
+    public List<EstudianteDTO> recuperarEstudiantesPorCarreraYCiudad(Carrera carrera, String ciudadResidencia) {
         try {
             return em.createQuery(
-                            "SELECT e FROM Estudiante e JOIN e.inscripciones i WHERE i.carrera = :carrera AND e.ciudadResidencia = :ciudad", Estudiante.class)
+                                 "SELECT new dtos.EstudianteDTO(e.nombres,e.apellido,e.anioNacimiento," +
+                                    "e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) " +
+                                    "FROM Estudiante e JOIN e.inscripciones i " +
+                                    "WHERE i.carrera = :carrera AND e.ciudadResidencia = :ciudad", EstudianteDTO.class)
                     .setParameter("carrera", carrera)
                     .setParameter("ciudad", ciudadResidencia)
                     .getResultList();
@@ -190,10 +192,13 @@ public class EstudianteRepository implements Repository<Estudiante> {
             throw e;
         }
     }
-
-    public Estudiante selectByName(String nombre) {
+    //Recuperar un estudiante en base a su nombre
+    public EstudianteDTO selectByName(String nombre) {
         try{
-            return em.createQuery("SELECT e FROM Estudiante e WHERE e.nombres = :nombre", Estudiante.class)
+            return em.createQuery("SELECT new dtos.EstudianteDTO(e.nombres,e.apellido,e.anioNacimiento," +
+                                     "e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) " +
+                                     "FROM Estudiante e " +
+                                     "WHERE e.nombres = :nombre", EstudianteDTO.class)
                     .setParameter("nombre",nombre)
                     .getSingleResult();
         } catch (Exception e) {
