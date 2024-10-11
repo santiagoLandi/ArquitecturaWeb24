@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface DireccionRepository extends JpaRepository<Direccion, Integer> {
     @Query("SELECT t FROM Direccion t where t.calle = :calle")
-    public List<Direccion> findAllBySurname(String calle);
+    public List<Direccion> findAllByCalle(String calle);
 
     @Query("SELECT t FROM Direccion t where t.numero = :numero")
-    public List<Direccion> findAllByName(Integer numero);
+    public List<Direccion> findAllByNumero(Integer numero);
 }

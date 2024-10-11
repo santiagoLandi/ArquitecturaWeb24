@@ -4,15 +4,20 @@ import org.example.tp3springboot.Model.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-public interface PersonaRepository extends JpaRepository<Persona, Long> {
+public interface PersonaRepository extends JpaRepository<Persona, Integer> {
 
     @Query("SELECT t FROM Persona t where t.apellido = :apellido")
-    public List<Persona> findAllBySurname(String apellido);
+    List<Persona> findAllByApellido(String apellido);
 
     @Query("SELECT t FROM Persona t where t.nombre = :nombre")
-    public List<Persona> findAllByName(String nombre);
+    List<Persona> findAllByNombre(String nombre);
+
+
+
+
 
 }

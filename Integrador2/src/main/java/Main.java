@@ -142,7 +142,7 @@ public class Main {
 
 
         System.out.println("Vamos a buscar un estudiante por nombre Alejo");
-        Estudiante est= estudianteRepo.selectByName("Alejo");
+        EstudianteDTO est= estudianteRepo.selectByName("Alejo");
         System.out.println(est.toString());
 
 
