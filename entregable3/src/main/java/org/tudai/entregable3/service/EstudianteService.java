@@ -12,8 +12,13 @@ import java.util.List;
 
 @Service
 public class EstudianteService {
-    @Autowired
+
     private EstudianteRepository estudianteRepository;
+
+    @Autowired
+    public EstudianteService(EstudianteRepository estudianteRepository) {
+        this.estudianteRepository = estudianteRepository;
+    }
 
     public EstudianteDTO findById(long id) {
         return (EstudianteDTO) estudianteRepository.findById(id)
@@ -27,6 +32,10 @@ public class EstudianteService {
 
     public void save(Estudiante estudiante) {
         estudianteRepository.save(estudiante);
+    }
+
+    public void delete(Long id) {
+        estudianteRepository.deleteById(id);
     }
 
     public  EstudianteDTO findByNombre(String nombre) {

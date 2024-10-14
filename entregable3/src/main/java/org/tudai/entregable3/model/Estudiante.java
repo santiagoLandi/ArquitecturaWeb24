@@ -41,4 +41,9 @@ public class Estudiante {
         this.libretaUniv = libretaUniv;
         this.inscripciones = new ArrayList<>();
     }
+
+    public void addInscripcion(Inscripcion i){
+        this.inscripciones.add(i);
+        i.setEstudiante(this);
+    }
 }

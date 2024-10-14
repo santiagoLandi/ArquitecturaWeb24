@@ -26,10 +26,10 @@ public class Inscripcion {
 
     public Inscripcion() {}
 
-    public Inscripcion(Integer anioInscripcion, Carrera carrera, Estudiante estudiante) {
+    public Inscripcion(Integer anioInscripcion, Integer anioEgreso, boolean graduado, Carrera carrera, Estudiante estudiante) {
         this.anioInscripcion = anioInscripcion;
-        this.anioEgreso = null;
-        this.graduado = false;
+        this.anioEgreso = anioEgreso;
+        this.graduado = graduado;
         this.carrera = carrera;
         this.estudiante = estudiante;
     }

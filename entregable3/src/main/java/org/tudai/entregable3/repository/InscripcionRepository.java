@@ -17,16 +17,28 @@ public interface InscripcionRepository extends JpaRepository<Inscripcion, Long> 
     // inscriptos y egresados por año. Se deben ordenar las carreras alfabéticamente, y
     // presentar los años de manera cronológica.
     @Transactional
-    @Query("SELECT (c.nombre, i.anioInscripcion, i.anioEgreso, (SELECT COUNT(i1) FROM Inscripcion i1 WHERE i1.anioEgreso = 0 AND i1.carrera = c), (SELECT COUNT(i2) FROM Inscripcion i2 WHERE i2.anioEgreso != 0 AND i2.carrera = c), e.libretaUniv) FROM Inscripcion i JOIN i.carrera c JOIN i.estudiante e ORDER BY c.nombre ASC, i.anioInscripcion ASC, i.anioEgreso ASC")
-    List<ReporteCarreraDTO> getReporteCarreras();
+    @Query("SELECT c.nombre AS nombreCarrera, i.anioInscripcion AS anio, COUNT(i) AS cantInscriptos "  +
+                               "FROM Inscripcion i JOIN i.carrera c "  +
+                               "GROUP BY c.nombre, i.anioInscripcion "  +
+                               "ORDER BY c.nombre ASC, i.anioInscripcion ASC")
+    List<Object[]>getInscriptosPorAnioYcarrera();
+
+    @Transactional
+    @Query("SELECT c.nombre AS nombreCarrera, i.anioEgreso AS anio, COUNT(i) AS cantEgresados " +
+            "FROM Inscripcion i JOIN i.carrera c " +
+            "WHERE i.anioEgreso IS NOT NULL " +
+            "GROUP BY c.nombre, i.anioEgreso " +
+            "ORDER BY c.nombre ASC, i.anioEgreso ASC")
+    List<Object[]>getEgresadosPorAnioYcarrera();
+
 
     @Modifying
     @Transactional
-    @Query("UPDATE Inscripcion i SET i.anioEgreso =:anio, i.graduado=:esGraduado WHERE i.estudiante.id=:estudianteId ")
-    void actualizarInscripcion(@Param("anio")Integer anio, @Param("esGraduado")Boolean esGraduado,@Param("estudianteId") Long estudianteId);
+    @Query("UPDATE Inscripcion i SET i.anioEgreso =:anio, i.graduado=:esGraduado WHERE i.estudiante.id=:estudianteId AND i.carrera.id=:idCarrera")
+    void actualizarInscripcion(@Param("anio")Integer anio, @Param("esGraduado")Boolean esGraduado,@Param("estudianteId") Long estudianteId,@Param("idCarrera") Long idCarrera);
 
     @Transactional
-    @Query("SELECT i FROM Inscripcion i WHERE i.estudiante.id = :estudianteId AND i.carrera.idCarrera = :carreraId")
+    @Query("SELECT i FROM Inscripcion i WHERE i.estudiante.id = :estudianteId AND i.carrera.id = :carreraId")
     Inscripcion findByEstudianteIdAndCarreraId(@Param("estudianteId") Long estudianteId, @Param("carreraId") Long carreraId);
 }
-}
+

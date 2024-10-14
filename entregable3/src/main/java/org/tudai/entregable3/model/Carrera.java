@@ -11,7 +11,7 @@ import java.util.List;
 public class Carrera {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idCarrera;
+    private Long id;
     @Column(nullable = false)
     private String nombre;
     // Relación uno a muchos con la entidad Inscripcion
@@ -23,5 +23,10 @@ public class Carrera {
     public Carrera(String nombre) {
         this.nombre = nombre;
         this.inscripciones = new ArrayList<>();
+    }
+
+    public void addInscripcion(Inscripcion inscripcion) {
+        this.inscripciones.add(inscripcion);
+        inscripcion.setCarrera(this);
     }
 }
