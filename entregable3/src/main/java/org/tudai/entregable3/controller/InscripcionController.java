@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.tudai.entregable3.dto.InscripcionDTO;
 import org.tudai.entregable3.dto.ReporteCarreraDTO;
 import org.tudai.entregable3.model.Carrera;
 import org.tudai.entregable3.model.Estudiante;
@@ -34,16 +35,17 @@ public class InscripcionController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-    @RequestMapping("reporteCarreras")
-    public ResponseEntity<List<ReporteCarreraDTO>>getReporteCarreras(){
-        try{
-            List<ReporteCarreraDTO> resultado=inscripcionService.getReporteCarreras();
+    @GetMapping("/")
+    public ResponseEntity<List<InscripcionDTO>> getAll() {
+        try {
+            List<InscripcionDTO> resultado = inscripcionService.findAll();
             return ResponseEntity.ok(resultado);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
     }
+
+
     @PutMapping("/graduarEstudiante/{anio}/")
     public void actualizarInscripcion(@PathVariable Integer anio, @RequestBody Estudiante estudiante,@RequestBody Carrera carrera) {
         try {
@@ -52,7 +54,6 @@ public class InscripcionController {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
     @GetMapping("/reporteCarreras")
     public ResponseEntity<List<ReporteCarreraDTO>>getReporteCarrera(){
         try{
@@ -63,6 +64,8 @@ public class InscripcionController {
         }
 
     }
+
+
 
 
 

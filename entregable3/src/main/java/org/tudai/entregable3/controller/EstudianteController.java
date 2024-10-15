@@ -79,9 +79,9 @@ public class EstudianteController {
     }
 
     @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<EstudianteDTO> findByNombre(@PathVariable String nombre) {
+    public ResponseEntity<List<EstudianteDTO>> findByNombre(@PathVariable String nombre) {
         try {
-            EstudianteDTO estudianteDTO = estudianteService.findByNombre(nombre);
+            List<EstudianteDTO> estudianteDTO = estudianteService.findByNombre(nombre);
             if (estudianteDTO != null) {
                 return ResponseEntity.ok(estudianteDTO);  // 200 OK con el EstudianteDTO
             } else {
@@ -102,9 +102,9 @@ public class EstudianteController {
     }
 
     @GetMapping("/apellido/{apellido}")
-    public ResponseEntity<EstudianteDTO> findByApellido(@PathVariable String apellido){
+    public ResponseEntity<List<EstudianteDTO>> findByApellido(@PathVariable String apellido){
         try{
-            EstudianteDTO estudiante=estudianteService.findByApellido(apellido);
+            List<EstudianteDTO> estudiante=estudianteService.findByApellido(apellido);
             if (estudiante != null) {
                 return ResponseEntity.ok(estudiante);
             }else{
@@ -116,7 +116,7 @@ public class EstudianteController {
         }
     }
 
-    @GetMapping("/estudiantesOrdenadosPorNombre")
+    @GetMapping("/ordenadosPorNombre")
     public ResponseEntity<List<EstudianteDTO>> estudiantesOrdenadosPorNombre() {
         try{
             List<EstudianteDTO>estudiantes=estudianteService.findEstudiantesOrdByNombre();
@@ -150,10 +150,10 @@ public class EstudianteController {
         }
     }
 
-    @GetMapping("/estudiantesPorCarreraCiudad/{ciudad}/{carrera}")
-    public ResponseEntity<List<EstudianteDTO>>getEstudiantesPorCarreraCiudad(@PathVariable String ciudad, @PathVariable String carrera) {
+    @GetMapping("/porCiudadCarrera/{ciudad}/{nombreCarrera}")
+    public ResponseEntity<List<EstudianteDTO>>getEstudiantesPorCarreraCiudad(@PathVariable String ciudad, @PathVariable String nombreCarrera) {
         try{
-            List<EstudianteDTO>estudiantes=estudianteService.findByCiudadCarrera(ciudad,carrera);
+            List<EstudianteDTO>estudiantes=estudianteService.findByCiudadCarrera(ciudad,nombreCarrera);
             return ResponseEntity.ok(estudiantes);
         }catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

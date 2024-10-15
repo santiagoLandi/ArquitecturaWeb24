@@ -1,5 +1,6 @@
 package org.tudai.entregable3.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tudai.entregable3.dto.CarreraConCantidadInscriptosDTO;
@@ -29,15 +30,28 @@ public class CarreraService {
         List<Carrera> carreras = carreraRepository.findAll();
         List<CarreraDTO> carrerasDTO = new ArrayList<>();
         for (Carrera carrera : carreras) {
-            CarreraDTO carreraDTO = (CarreraDTO) convertToDTO(carrera);
+            CarreraDTO carreraDTO = convertToDTO(carrera);
             carrerasDTO.add(carreraDTO);
         }
         return carrerasDTO;
     }
-    private Object convertToDTO(Carrera carrera) {
+    private CarreraDTO convertToDTO(Carrera carrera) {
         return new CarreraDTO(carrera.getNombre());
     }
+
     public List<CarreraConCantidadInscriptosDTO> getCarreraCantidadInscriptos(){
         return carreraRepository.carrerasConInscriptos();
+    }
+
+    public CarreraDTO findCarreraById(Long id) {
+        return carreraRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Carrera no encontrada con id " + id));
+
+    }
+
+    public Carrera findEntityById(Long id) {
+        return carreraRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Carrera no encontrada"));
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.tudai.entregable3.dto.CarreraConCantidadInscriptosDTO;
 import org.tudai.entregable3.dto.CarreraDTO;
+import org.tudai.entregable3.dto.EstudianteDTO;
 import org.tudai.entregable3.model.Carrera;
 import org.tudai.entregable3.model.Estudiante;
 import org.tudai.entregable3.repository.CarreraRepository;
@@ -39,12 +40,21 @@ public class CarreraController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();  // 500 Internal Server Error
         }
     }
-    @GetMapping()
+    @GetMapping("/")
     public ResponseEntity<List<CarreraDTO>> findAll() {
         try{
             List<CarreraDTO>carreras=carreraService.findAll();
-            return ResponseEntity.ok().body(carreras);
+            return ResponseEntity.ok(carreras);
         }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<CarreraDTO> findById(@PathVariable Long id) {
+        try{
+            CarreraDTO carrera=carreraService.findCarreraById(id);
+            return ResponseEntity.ok(carrera);
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

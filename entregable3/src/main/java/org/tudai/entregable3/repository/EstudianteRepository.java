@@ -11,16 +11,16 @@ import java.util.List;
 @Repository
 public interface EstudianteRepository extends JpaRepository<Estudiante, Long> {
     @Query("SELECT new org.tudai.entregable3.dto.EstudianteDTO (e.nombres,e.apellido,e.anioNacimiento,e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) FROM Estudiante e WHERE e.nombres=:nombre")
-    EstudianteDTO findByNombre(String nombre);
+    List<EstudianteDTO> findByNombre(String nombre);
 
     @Query("SELECT new org.tudai.entregable3.dto.EstudianteDTO (e.nombres,e.apellido,e.anioNacimiento,e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) FROM Estudiante e WHERE e.apellido=:apellido")
-    EstudianteDTO findByApellido(String apellido);
+    List<EstudianteDTO> findByApellido(String apellido);
     //c) recuperar todos los estudiantes, y especificar algún criterio de ordenamiento simple.
     @Query("SELECT new org.tudai.entregable3.dto.EstudianteDTO (e.nombres,e.apellido,e.anioNacimiento,e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) FROM Estudiante e ORDER BY e.nombres")
-    EstudianteDTO getEstudiantesOrderByNombre();
+    List<EstudianteDTO> getEstudiantesOrderByNombre();
     //d) recuperar un estudiante, en base a su número de libreta universitaria.
-    @Query("SELECT new org.tudai.entregable3.dto.EstudianteDTO (e.nombres,e.apellido,e.anioNacimiento,e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) FROM Estudiante e WHERE e.libretaUniv =:libretaU")
-    EstudianteDTO getEstudianteByNumeroLibreta(@Param("libretaU") long libretaU  );
+    @Query("SELECT new org.tudai.entregable3.dto.EstudianteDTO (e.nombres,e.apellido,e.anioNacimiento,e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) FROM Estudiante e WHERE e.libretaUniv =:lu")
+    EstudianteDTO getEstudianteByNumeroLibreta(@Param("lu") long lu  );
     //e) recuperar todos los estudiantes, en base a su género.
     @Query("SELECT new org.tudai.entregable3.dto.EstudianteDTO(e.nombres,e.apellido,e.anioNacimiento,e.genero,e.dni,e.ciudadResidencia,e.libretaUniv) FROM Estudiante e WHERE e.genero =:genero")
     List<EstudianteDTO> getEstudiantesByGenero(@Param("genero")String genero);

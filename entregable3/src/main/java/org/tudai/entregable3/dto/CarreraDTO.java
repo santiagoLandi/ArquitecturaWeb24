@@ -1,5 +1,8 @@
 package org.tudai.entregable3.dto;
 
+import lombok.Getter;
+
+@Getter
 public class CarreraDTO {
     private String nombre;
 
@@ -8,6 +11,8 @@ public class CarreraDTO {
     public CarreraDTO(String nombre) {
         this.nombre = nombre;
     }
+
+
 
     @Override
     public String toString() {

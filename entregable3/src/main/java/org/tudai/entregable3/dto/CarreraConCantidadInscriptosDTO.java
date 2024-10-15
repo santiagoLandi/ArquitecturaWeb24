@@ -1,5 +1,8 @@
 package org.tudai.entregable3.dto;
 
+import lombok.Getter;
+
+@Getter
 public class CarreraConCantidadInscriptosDTO {
     private String nombreCarrera;
     private long cantidadInscriptos;

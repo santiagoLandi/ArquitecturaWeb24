@@ -9,6 +9,7 @@ import org.tudai.entregable3.repository.EstudianteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EstudianteService {
@@ -21,12 +22,12 @@ public class EstudianteService {
     }
 
     public EstudianteDTO findById(long id) {
-        return (EstudianteDTO) estudianteRepository.findById(id)
+        return  estudianteRepository.findById(id)
                 .map(this::convertToDTO)  // Convertir el Estudiante a EstudianteDTO
                 .orElseThrow(() -> new EntityNotFoundException("Estudiante no encontrado con id " + id));
     }
 
-    private Object convertToDTO(Estudiante estudiante) {
+    private EstudianteDTO convertToDTO(Estudiante estudiante) {
         return new EstudianteDTO(estudiante.getNombres(),estudiante.getApellido(),estudiante.getAnioNacimiento(),estudiante.getGenero(),estudiante.getDni(),estudiante.getCiudadResidencia(),estudiante.getLibretaUniv());
     }
 
@@ -38,11 +39,11 @@ public class EstudianteService {
         estudianteRepository.deleteById(id);
     }
 
-    public  EstudianteDTO findByNombre(String nombre) {
+    public  List<EstudianteDTO> findByNombre(String nombre) {
         return estudianteRepository.findByNombre(nombre);
     }
 
-    public EstudianteDTO findByApellido(String apellido) {
+    public List<EstudianteDTO> findByApellido(String apellido) {
         return estudianteRepository.findByApellido(apellido);
     }
 
@@ -50,7 +51,7 @@ public class EstudianteService {
         List<EstudianteDTO> resultado = new ArrayList<>();
         List<Estudiante>estudiantes= estudianteRepository.findAll();
         for (Estudiante estudiante : estudiantes) {
-            EstudianteDTO est= (EstudianteDTO) convertToDTO(estudiante);
+            EstudianteDTO est=  convertToDTO(estudiante);
             resultado.add(est);
         }
         return resultado;
@@ -65,10 +66,15 @@ public class EstudianteService {
     }
 
     public List<EstudianteDTO>findEstudiantesOrdByNombre(){
-        return (List<EstudianteDTO>) estudianteRepository.getEstudiantesOrderByNombre();
+        return estudianteRepository.getEstudiantesOrderByNombre();
     }
 
-    public List<EstudianteDTO>findByCiudadCarrera(String ciudad,String carrera){
-        return estudianteRepository.getEstudiantesByCiudadAndCarrera(ciudad,carrera);
+    public List<EstudianteDTO>findByCiudadCarrera(String ciudad,String nombreCarrera){
+        return estudianteRepository.getEstudiantesByCiudadAndCarrera(ciudad,nombreCarrera);
+    }
+
+    public Estudiante findEntityById(Long id) {
+         return estudianteRepository.findById(id)
+                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado"));
     }
 }

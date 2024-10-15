@@ -3,16 +3,14 @@ package org.tudai.entregable3.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tudai.entregable3.dto.EstudianteDTO;
+import org.tudai.entregable3.dto.InscripcionDTO;
 import org.tudai.entregable3.dto.ReporteCarreraDTO;
 import org.tudai.entregable3.model.Carrera;
 import org.tudai.entregable3.model.Estudiante;
 import org.tudai.entregable3.model.Inscripcion;
 import org.tudai.entregable3.repository.InscripcionRepository;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,16 +30,16 @@ public class InscripcionService {
 
     public List<ReporteCarreraDTO> getReporteCarreras() {
         try {
-            List<Object[]> inscriptos = inscripcionRepository.getInscriptosPorAnioYcarrera();
-            List<Object[]> egresados = inscripcionRepository.getEgresadosPorAnioYcarrera();
+            List<ReporteCarreraDTO> inscriptos = inscripcionRepository.getInscriptosPorAnioYcarrera();
+            List<ReporteCarreraDTO> egresados = inscripcionRepository.getEgresadosPorAnioYcarrera();
 
             Map<String, Map<Integer, ReporteCarreraDTO>> reporteMap = new HashMap<>();
 
             // Procesar inscriptos
-            for (Object[] inscripto : inscriptos) {
-                String nombreCarrera = (String) inscripto[0];
-                int anio = (Integer) inscripto[1];
-                int cantInscriptos = (Integer) inscripto[2];
+            for (ReporteCarreraDTO inscripto : inscriptos) {
+                String nombreCarrera = inscripto.getNombreCarrera();
+                int anio = (Integer) inscripto.getAnio();
+                int cantInscriptos = inscripto.getCantInscriptos();
 
                 reporteMap
                         .computeIfAbsent(nombreCarrera, k -> new HashMap<>())
@@ -49,10 +47,10 @@ public class InscripcionService {
             }
 
             // Procesar egresados
-            for (Object[] egresado : egresados) {
-                String nombreCarrera = (String) egresado[0];
-                int anio = (Integer) egresado[1];
-                int cantEgresados = (Integer) egresado[2];
+            for (ReporteCarreraDTO egresado : egresados) {
+                String nombreCarrera = egresado.getNombreCarrera();
+                int anio = (Integer) egresado.getAnio();
+                int cantEgresados = (Integer) egresado.getCantEgresados();
 
                 reporteMap
                         .computeIfAbsent(nombreCarrera, k -> new HashMap<>())
@@ -74,7 +72,7 @@ public class InscripcionService {
     public void actualizarInscripcion(Integer anio, boolean esGraduado, Long estudianteId,Long idCarrera){
         inscripcionRepository.actualizarInscripcion(anio,esGraduado,estudianteId,idCarrera);
     }
-
+    /*
     public void save(Inscripcion inscripcion) {
         try{
             Estudiante estudiante=inscripcion.getEstudiante();
@@ -88,4 +86,57 @@ public class InscripcionService {
 
 
     }
+     */
+    public void save(Inscripcion inscripcion) {
+        try {
+            // Verifica que el estudiante y la carrera existan
+            Estudiante estudiante = estudianteService.findEntityById(inscripcion.getEstudiante().getId());
+            Carrera carrera = carreraService.findEntityById(inscripcion.getCarrera().getId());
+
+            // Asigna correctamente las inscripciones al estudiante y carrera
+            estudiante.addInscripcion(inscripcion);
+            carrera.addInscripcion(inscripcion);
+
+            // Guarda la inscripción
+            inscripcionRepository.save(inscripcion);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Error al guardar la inscripción", e);
+        }
+    }
+
+    public List<InscripcionDTO> findAll() {
+        List<Inscripcion> inscripciones = inscripcionRepository.findAll();
+        return inscripciones.stream().map(inscripcion -> {
+            Carrera carrera = inscripcion.getCarrera();
+            Estudiante estudiante = inscripcion.getEstudiante();
+
+            return new InscripcionDTO(
+                    inscripcion.getAnioInscripcion(),
+                    inscripcion.getAnioEgreso(),
+                    inscripcion.isGraduado(),
+                    carrera != null ? carrera.getNombre() : null, // Nombre de la carrera
+                    estudiante != null ? estudiante.getNombres() + " " + estudiante.getApellido() : null // Nombre del estudiante
+            );
+        }).collect(Collectors.toList());
+    }
+    /*
+    public List<InscripcionDTO> findAll() {
+        List<InscripcionDTO> resultado = new ArrayList<>();
+        List<Inscripcion> inscripciones = inscripcionRepository.findAll();
+
+        for (Inscripcion inscripcion : inscripciones) {
+            Carrera carrera = inscripcion.getCarrera();
+            Estudiante estudiante = inscripcion.getEstudiante();
+
+            InscripcionDTO dto = new InscripcionDTO(
+                    inscripcion.getAnioInscripcion(),
+                    inscripcion.getAnioEgreso(),
+                    inscripcion.isGraduado(),
+                    carrera != null ? carrera.getNombre() : null, // Nombre de la carrera
+                    estudiante != null ? estudiante.getNombres() + " " + estudiante.getApellido() : null // Nombre del estudiante
+            );
+            resultado.add(dto);
+        }
+        return resultado;
+    }*/
 }

@@ -1,5 +1,8 @@
 package org.tudai.entregable3.dto;
 
+import lombok.Getter;
+
+@Getter
 public class ReporteCarreraDTO {
 
     private String nombreCarrera;
@@ -7,11 +10,11 @@ public class ReporteCarreraDTO {
     private Integer cantInscriptos;
     private Integer cantEgresados;
 
-    public ReporteCarreraDTO(String nombreCarrera, Integer anio, Integer cantInscriptos, Integer cantEgresados ) {
+    public ReporteCarreraDTO(String nombreCarrera, Integer anio, long cantInscriptos, long cantEgresados ) {
         this.nombreCarrera = nombreCarrera;
         this.anio = anio;
-        this.cantInscriptos = cantInscriptos;
-        this.cantEgresados = cantEgresados;
+        this.cantInscriptos = Math.toIntExact(cantInscriptos);
+        this.cantEgresados = Math.toIntExact(cantEgresados);
     }
 
     public String getNombreCarrera() {
