@@ -135,8 +135,6 @@ public class InscripcionRepository implements Repository<Inscripcion> {
 
     // f) Recuperar las carreras con estudiantes inscriptos, y ordenar por cantidad de inscriptos
     public List<CarreraConCantInscriptosDTO>listarCarrerasPorCantidadInscriptos() {
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
         try {
             String jpql ="SELECT  new dtos.CarreraConCantInscriptosDTO (c.nombre, COUNT(*)) " +
                     "FROM Carrera c JOIN c.inscripciones i " +
